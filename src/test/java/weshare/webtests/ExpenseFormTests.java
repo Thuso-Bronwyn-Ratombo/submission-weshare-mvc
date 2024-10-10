@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 import static weshare.model.DateHelper.TODAY;
 import static weshare.model.MoneyHelper.amountOf;
 
-@Disabled
+//@Disabled
 @DisplayName("For expenses")
 public class ExpenseFormTests extends WebTestRunner {
 

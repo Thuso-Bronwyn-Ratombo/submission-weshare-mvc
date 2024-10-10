@@ -10,12 +10,19 @@ public class Routes {
     public static final String LOGIN_ACTION = "/login.action";
     public static final String LOGOUT = "/logout";
     public static final String EXPENSES = "/expenses";
+    public static final String ADD_EXPENSE = "/newexpense";
+    public static final String PAYMENT_SENT = "/paymentrequests_sent";
+    public static final String PAYMENT_RECEIVED = "/paymentrequests_received";
 
     public static void configure(WeShareServer server) {
         server.routes(() -> {
             post(LOGIN_ACTION,  PersonController.login);
             get(LOGOUT,         PersonController.logout);
             get(EXPENSES,           ExpensesController.view);
+            get(ADD_EXPENSE,   ExpensesController.showAddExpenseForm);
+            post(EXPENSES,   ExpensesController.addExpense);
+            get(PAYMENT_SENT, ExpensesController.payment_received);
+            get(PAYMENT_RECEIVED, ExpensesController.payment_sent);
         });
     }
 }

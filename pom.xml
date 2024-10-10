@@ -92,6 +92,41 @@
             <version>1.5.4</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.hexworks.cobalt</groupId>
+            <artifactId>cobalt.core-jvm</artifactId>
+            <version>2020.0.19-PREVIEW</version>
+        </dependency>
+
+
+        <!-- Chrome Driver -->
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-chrome-driver</artifactId>
+            <version>4.25.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-devtools-v129</artifactId>
+            <version>4.25.0</version>
+        </dependency>
+
+
+        <!-- Selenium Support -->
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-support</artifactId>
+            <version>4.24.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Web Driver Manager -->
+        <dependency>
+            <groupId>io.github.bonigarcia</groupId>
+            <artifactId>webdrivermanager</artifactId>
+            <version>5.9.2</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

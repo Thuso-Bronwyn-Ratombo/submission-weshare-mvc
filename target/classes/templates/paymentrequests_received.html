@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{/layout.html}">
+<head>
+    <title>Received Payments</title>
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+<div layout:fragment="contents">
+    <h2>People that owe me</h2>
+
+    <p id="no_payment_requests_received" th:if="${#lists.isEmpty(expenses)}">You don't owe anyone anything!</p>
+
+    <table th:if="${#lists.isEmpty(expenses)}">
+        <thead>
+        <tr>
+            <th>Who</th>
+            <th>What</th>
+            <th>Due in (days)</th>
+            <th>How much</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="expense : ${expenses}">
+            <!-- Assuming `expense.date`, `expense.description`, `expense.amount`, etc. are available -->
+            <td id="date_${expense.id}" th:text="${expense.date}">05/09/2022</td>
+            <td id="amount_${expense.id}" th:text="${expense.amount}">ZAR 120.00</td> <!-- Updated here -->
+            <td id="request_${expense.id}" th:text="'N/A'">N/A</td>
+            <td id="received_${expense.id}" th:text="'N/A'">N/A</td>
+            <td action="/payment.action" th:text="'N/A'">
+                <input type="submit" value="Submit" class="submit-button"/>
+            </td>
+
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+</div>
+</body>
+</html>

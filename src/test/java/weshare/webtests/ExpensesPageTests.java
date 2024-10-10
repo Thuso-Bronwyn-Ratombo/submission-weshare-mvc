@@ -56,7 +56,7 @@ public class ExpensesPageTests extends WebTestRunner {
 
     @Test
     @DisplayName("when I have some expenses")
-    @Disabled
+//    @Disabled
     public void haveExpenses() throws IOException {
         session.openLoginPage()
                 .login("student1@wethinkcode.co.za")
@@ -69,7 +69,7 @@ public class ExpensesPageTests extends WebTestRunner {
 
     @Test
     @DisplayName("when my expense is paid in full")
-    @Disabled
+//    @Disabled
     public void expensePaidInFull() throws IOException {
         session.openLoginPage()
                 .login("student2@wethinkcode.co.za")
