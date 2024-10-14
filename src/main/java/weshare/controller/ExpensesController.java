@@ -116,13 +116,25 @@ public class ExpensesController {
         Person personLoggedIn = WeShareServer.getPersonLoggedIn(context);
 
         Collection<PaymentRequest> payment_received = expensesDAO.findPaymentRequestsReceived(personLoggedIn);
-        context.render("/paymentrequests_received.html");
+
+        Map<String, Object> viewModel = Map.of(
+                "payments", payment_received
+        );
+
+        context.render("/paymentrequests_received.html", viewModel);
     };
+
+
     public static final Handler payment_sent = context -> {
         ExpenseDAO expensesDAO = ServiceRegistry.lookup(ExpenseDAO.class);
         Person personLoggedIn = WeShareServer.getPersonLoggedIn(context);
 
         Collection<PaymentRequest> payment_sent = expensesDAO.findPaymentRequestsSent(personLoggedIn);
-        context.render("/paymentrequests_sent.html");
+
+        Map<String, Object> viewModel = Map.of(
+                "payments", payment_sent
+        );
+
+        context.render("/paymentrequests_sent.html", viewModel);
     };
 }

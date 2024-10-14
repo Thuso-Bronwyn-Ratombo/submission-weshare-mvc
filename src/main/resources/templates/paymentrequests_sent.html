@@ -12,9 +12,9 @@
 <div layout:fragment="contents">
     <h2>People that owe me</h2>
 
-    <p id="no_payment_requests_sent" th:if="${#lists.isEmpty(expenses)}">Nobody owes you anything!</p>
+    <p id="no_payment_requests_sent" th:if="${#lists.isEmpty(payments)}">Nobody owes you anything!</p>
 
-    <table th:if="${#lists.isEmpty(expenses)}">
+    <table th:if="${!#lists.isEmpty(payments)}">
         <thead>
         <tr>
             <th>Who</th>
@@ -25,19 +25,19 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="expense : ${expenses}">
+        <tr th:each="payment : ${payments}">
             <!-- Assuming `expense.date`, `expense.description`, `expense.amount`, etc. are available -->
-            <td id="date_${expense.id}" th:text="${expense.date}">05/09/2022</td>
-            <td id="amount_${expense.id}" th:text="${expense.amount}">ZAR 120.00</td> <!-- Updated here -->
-            <td id="request_${expense.id}" th:text="'N/A'">N/A</td>
-            <td id="received_${expense.id}" th:text="'N/A'">N/A</td>
+            <td  th:text="${payment.personWhoShouldPayBack}"></td>
+            <td  th:text="${payment.expense.description}"></td> <!-- Updated here -->
+            <td  th:text="${payment.expense.description}">N/A</td>
+            <td  th:text="${payment.expense.description}">N/A</td>
         </tr>
         </tbody>
 
         <tfoot>
         <tr>
             <td colspan="5">Total Unpaid</td>
-            <td id="grand_total" >
+            <td>
                 <span th:text="${totalAmount}"></span>
             </td>
         </tr>
