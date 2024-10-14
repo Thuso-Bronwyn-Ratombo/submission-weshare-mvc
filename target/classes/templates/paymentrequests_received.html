@@ -34,13 +34,19 @@
             <td action="/payment.action" th:text="'N/A'">
                 <input type="submit" value="Submit" class="submit-button"/>
             </td>
+        <tfoot>
+        <tr>
+            <td colspan="5">Total Unpaid</td>
+            <td id="grand_total" >
+                <span th:text="${totalAmount}"></span>
+            </td>
+        </tr>
+        </tfoot>
 
         </tr>
         </tbody>
     </table>
 </div>
 
-
-</div>
 </body>
 </html>

@@ -3,7 +3,7 @@
         xmlns:th="http://www.thymeleaf.org"
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         layout:decorate="~{/layout.html}">
-<head></head>
+<head><title>Expenses</title></head>
 <body>
 <div layout:fragment="contents">
     <section class="expenseList">
@@ -14,15 +14,6 @@
 
         <!-- Message if no expenses exist -->
         <p id="no_expenses" th:if="${#lists.isEmpty(expenses)}">You don't have any expenses!</p>
-
-<!--        &lt;!&ndash; Block format for listing expenses &ndash;&gt;-->
-<!--        <div id="expenses" th:unless="${#lists.isEmpty(expenses)}">-->
-<!--            <th:block th:each="expense: ${expenses}">-->
-<!--                <p>Date: <span th:text="${expense.date}">05/09/2022</span></p>-->
-<!--                <p>Description: <span th:text="${expense.description}">Lunch</span></p>-->
-<!--                <p>Amount: <span th:text="${expense.amount}">ZAR 120</span></p>-->
-<!--            </th:block>-->
-<!--        </div>-->
 
         <!-- Table format for listing expenses -->
         <table th:if="${!#lists.isEmpty(expenses)}">
@@ -38,29 +29,27 @@
             </thead>
             <tbody>
             <tr th:each="expense : ${expenses}">
-                <!-- Assuming `expense.date`, `expense.description`, `expense.amount`, etc. are available -->
                 <td id="date_${expense.id}" th:text="${expense.date}">05/09/2022</td>
                 <td id="description_${expense.id}">
-                    <a th:href="@{/expense/detail/{id}(id=${expense.id})}" th:text="${expense.description}">Lunch</a>
+                    <a th:href="@{/paymentrequest_expenseid=}" th:text="${expense.description}">Lunch</a>
+<!--                    {id}(id=${expense.id})-->
                 </td>
-                <td id="amount_${expense.id}" th:text="${expense.amount}"></td> <!-- Updated here -->
-                <td id="request_${expense.id}" th:text="'N/A'">N/A</td>
-                <td id="received_${expense.id}" th:text="'N/A'">N/A</td>
-                <td id="net_${expense.id}" th:text="${expense.amount}"></td> <!-- Updated here -->
+                <td id="amount_${expense.id}" th:text="${expense.amount}"></td>
+                <td id="request_${expense.id}" th:text="${'N/A'}"></td>
+                <td id="received_${expense.id}" th:text="${'N/A'}"></td>
+                <td id="net_${expense.id}" th:text="${expense.amount}"></td>
             </tr>
             </tbody>
-        </table>
-        <table th:if="${!#lists.isEmpty(expenses)}">
-            <thead>
-            <tr>
-                <th>Total expense</th>
-            </tr>
-            <tr>
-                <td id="grand_total" th:text="${expense.amount}"></td>
-            </tr>
-            </thead>
-        </table>
 
+            <tfoot>
+            <tr>
+                <td colspan="5">Total Expenses</td>
+                <td id="grand_total" >
+                    <span th:text="${totalAmount}"></span>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
     </section>
 </div>
 </body>

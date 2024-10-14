@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{/layout.html}">
+<head>
+    <title>Sent payments</title>
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+<div layout:fragment="contents">
+
+    <h2>Submit a payment request for the following expense</h2>
+    <table>
+        <tr>
+            <td><strong>Date</strong></td>
+            <td>{{expense_date}}</td>
+        </tr>
+        <tr>
+            <td><strong>Description</strong></td>
+            <td>{{expense_description}}</td>
+        </tr>
+        <tr>
+            <td><strong>Amount</strong></td>
+            <td>ZAR {{expense_amount}}</td>
+        </tr>
+    </table>
+
+    <h2>Previous Payment Requests for this expense</h2>
+
+    <table th:if="${#lists.isEmpty(expenses)}">
+        <thead>
+        <tr>
+            <th>Who</th>
+            <th>Due</th>
+            <th>Paid?</th>
+            <th>How much</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="expense : ${expenses}">
+            <!-- Assuming `expense.date`, `expense.description`, `expense.amount`, etc. are available -->
+            <td id="paymentrequest_who_?" th:text="${totalAmount}"> </td>
+            <td id="paymentrequest_date_?" th:text="${totalAmount}"> </td> <!-- Updated here -->
+            <td id="paymentrequest_paid_?" th:text="${totalAmount}"> </td>
+            <td id="paymentrequest_amount_?" th:text="${totalAmount}"> </td>
+        </tr>
+        </tbody>
+
+        <tfoot>
+        <tr>
+            <td colspan="5">Total Amounts of Payment Requested</td>
+            <td id="grand_total" >
+                <span th:text="${totalAmount}"></span>
+            </td>
+        </tr>
+        </tfoot>
+    </table>
+</div>
+
+</body>
+</html>

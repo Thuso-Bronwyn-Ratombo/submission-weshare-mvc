@@ -1,9 +1,11 @@
 package weshare.controller;
 
 import io.javalin.http.Handler;
+import org.javamoney.moneta.Money;
 import org.javamoney.moneta.function.MonetaryFunctions;
 import org.jetbrains.annotations.NotNull;
 import weshare.model.Expense;
+import weshare.model.MoneyHelper;
 import weshare.model.PaymentRequest;
 import weshare.model.Person;
 import weshare.persistence.ExpenseDAO;
@@ -28,7 +30,17 @@ public class ExpensesController {
         Person personLoggedIn = WeShareServer.getPersonLoggedIn(context);
 
         Collection<Expense> expenses = expensesDAO.findExpensesForPerson(personLoggedIn);
-        Map<String, Object> viewModel = Map.of("expenses", expenses);
+        MonetaryAmount totalAmount = expenses.stream()
+                .map(Expense::getAmount) // Get the MonetaryAmount
+                .reduce(MonetaryFunctions.sum()) // Sum the amounts
+                .orElse(Money.zero(MoneyHelper.ZERO_RANDS.getCurrency()));
+
+        // Pass expenses and totalAmount to the view
+        Map<String, Object> viewModel = Map.of(
+                "expenses", expenses,
+                "totalAmount", totalAmount
+        );
+
         context.render("expenses.html", viewModel);
     };
 
@@ -69,6 +81,10 @@ public class ExpensesController {
 
         // Redirect back to the expenses page or render a success message
         context.redirect("/expenses"); // Redirect to the expenses list page
+    };
+
+    public static final Handler payment_request = context -> {
+        context.render("/paymentrequest_expenseid=.html");
     };
 
     // Helper method to parse the amount from String to MonetaryAmount
