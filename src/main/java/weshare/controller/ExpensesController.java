@@ -19,6 +19,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static weshare.model.MoneyHelper.ZERO_RANDS;
@@ -84,7 +86,16 @@ public class ExpensesController {
     };
 
     public static final Handler payment_request = context -> {
-        context.render("/paymentrequest_expenseid=.html");
+        String expenseId = context.queryParam("expenseId");
+
+        ExpenseDAO expensesDAO = ServiceRegistry.lookup(ExpenseDAO.class);
+        Optional<Expense> expense = expensesDAO.get(UUID.fromString(expenseId));// Assuming you have this method
+
+        Map<String, Object> viewModel = Map.of(
+                "expense", expense
+        );
+
+        context.render("paymentrequest.html", viewModel);
     };
 
     // Helper method to parse the amount from String to MonetaryAmount

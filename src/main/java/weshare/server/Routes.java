@@ -13,7 +13,7 @@ public class Routes {
     public static final String ADD_EXPENSE = "/newexpense";
     public static final String PAYMENT_SENT = "/paymentrequests_sent";
     public static final String PAYMENT_RECEIVED = "/paymentrequests_received";
-    public static final String PAYMENT_REQUEST = "/paymentrequest_expenseid=";
+    public static final String PAYMENT_REQUEST = "/paymentrequest";
 
 
     public static void configure(WeShareServer server) {
@@ -22,7 +22,7 @@ public class Routes {
             get(LOGOUT,         PersonController.logout);
             get(EXPENSES,           ExpensesController.view);
             get(ADD_EXPENSE,   ExpensesController.showAddExpenseForm);
-            post(EXPENSES,   ExpensesController.addExpense);
+            post("/expense.action",   ExpensesController.addExpense);
             get(PAYMENT_SENT, ExpensesController.payment_received);
             get(PAYMENT_RECEIVED, ExpensesController.payment_sent);
             get(PAYMENT_REQUEST,    ExpensesController.payment_request);

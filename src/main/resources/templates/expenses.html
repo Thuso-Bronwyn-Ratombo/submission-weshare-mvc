@@ -31,7 +31,7 @@
             <tr th:each="expense : ${expenses}">
                 <td id="date_${expense.id}" th:text="${expense.date}">05/09/2022</td>
                 <td id="description_${expense.id}">
-                    <a th:href="@{/paymentrequest_expenseid=}" th:text="${expense.description}">Lunch</a>
+                    <a th:href="@{/paymentrequest(expenseId=${expense.id})}" th:text="${expense.description}">Lunch</a>
 <!--                    {id}(id=${expense.id})-->
                 </td>
                 <td id="amount_${expense.id}" th:text="${expense.amount}"></td>
