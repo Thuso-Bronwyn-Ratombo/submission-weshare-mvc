@@ -10,10 +10,10 @@
         <h2>My Expenses</h2>
 
         <!-- Add Expense Link -->
-        <a id="add_expense" th:href="@{/newexpense}">Add a new expense</a>
+        <a th:id="add_expense" th:href="@{/newexpense}">Add a new expense</a>
 
         <!-- Message if no expenses exist -->
-        <p id="no_expenses" th:if="${#lists.isEmpty(expenses)}">You don't have any expenses!</p>
+        <p th:id="no_expenses" th:if="${!hasUnpaidExpenses || #lists.isEmpty(expenses)}">You don't have any expenses!</p>
 
         <!-- Table format for listing expenses -->
         <table th:if="${!#lists.isEmpty(expenses)}">
@@ -29,22 +29,22 @@
             </thead>
             <tbody>
             <tr th:each="expense : ${expenses}">
-                <td id="date_${expense.id}" th:text="${expense.date}">05/09/2022</td>
-                <td id="description_${expense.id}">
-                    <a th:href="@{/paymentrequest(expenseId=${expense.id})}" th:text="${expense.description}">Lunch</a>
+                <td th:id="'date_'+${expense.id}" th:text="${expense.date}">05/09/2022</td>
+                <td >
+                    <a th:id="'payment_request_'+${expense.id}" th:href="@{/paymentrequest(expenseId=${expense.id})}" th:text="${expense.description}">Lunch</a>
 
                 </td>
-                <td id="amount_${expense.id}" th:text="${expense.amount}"></td>
-                <td id="request_${expense.id}" th:text="${expense.paymentRequests}"></td>
-                <td id="received_${expense.id}" th:text="${'N/A'}"></td>
-                <td id="net_${expense.id}" th:text="${expense.amount}"></td>
+                <td th:id="'amount_'+${expense.id}" th:text="${expense.amount}"></td>
+                <td th:id="'request_'+${expense.id}" th:text="${expense.totalAmountOfPaymentsRequested()}"></td>
+                <td th:id="'received_'+${expense.id}" th:text="${'N/A'}"></td>
+                <td th:id="'nett_'+${expense.id}" th:text="${expense.amount}"></td>
             </tr>
             </tbody>
 
             <tfoot>
             <tr>
                 <td colspan="5">Total Expenses</td>
-                <td id="grand_total" >
+                <td th:id="grand_total" >
                     <span th:text="${totalAmount}"></span>
                 </td>
             </tr>

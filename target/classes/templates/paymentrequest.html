@@ -15,15 +15,15 @@
     <table>
         <tr>
             <td><strong>Date</strong></td>
-            <td>{{expense_date}}</td>
+            <td th:id="expense_date" th:text="${expense.date}"> </td>
         </tr>
         <tr>
             <td><strong>Description</strong></td>
-            <td>{{expense_description}}</td>
+            <td th:id="expense_description" th:text="${expense.description}"></td>
         </tr>
         <tr>
             <td><strong>Amount</strong></td>
-            <td>ZAR {{expense_amount}}</td>
+            <td th:id="expense_amount" th:text="${expense.amount}"></td>
         </tr>
     </table>
 
@@ -40,34 +40,37 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="expense : ${expenses}">
+        <tr th:each="request : ${requests}">
             <!-- Assuming `expense.date`, `expense.description`, `expense.amount`, etc. are available -->
-            <td id="paymentrequest_who_${expense.id}" th:text="${totalAmount}"> </td>
-            <td id="paymentrequest_date_${expense.id}" th:text="${totalAmount}"> </td> <!-- Updated here -->
-            <td id="paymentrequest_paid_${expense.id}" th:text="${totalAmount}"> </td>
-            <td id="paymentrequest_amount_${expense.id}" th:text="${totalAmount}"> </td>
+            <td th:id="'paymentrequest_who_'+${request.id}" th:text="${request.personWhoShouldPayBack.getName()}"> </td>
+            <td th:id="'paymentrequest_date_'+${request.id}" th:text="${request.dueDate}"> </td> <!-- Updated here -->
+            <td th:id="'paymentrequest_paid_'+${request.id}" >
+                <span th:if="${request.isPaid}" >Yes</span>
+                <span th:if="${!request.isPaid}">No</span>
+            </td>
+            <td th:id="'paymentrequest_amount_'+${expense.id}" th:text="${request.amountToPay}"> </td>
         </tr>
         </tbody>
 
         <tfoot>
         <tr>
-            <td colspan="5">Total Amounts of Payment Requested</td>
-            <td id="grand_total" >
+            <td colspan="4">Total Amounts of Payment Requested</td>
+            <td th:id="grand_total" >
                 <span th:text="${totalAmount}"></span>
             </td>
         </tr>
         </tfoot>
     </table>
 
-    <form action="/paymentrequest.action" method="post" class="expense-form">
+    <form action="/payment.action" method="post" class="expense-form">
         <label for="email">The email address of the person that should pay you</label>
-        <input type="text" id="email" name="description" placeholder="student2@wethinkcode.co.za" required/>
+        <input type="text" id="email" name="email" placeholder="student2@wethinkcode.co.za" required/>
 
-        <label for="amount">The amount they should pay (maximum ZAR {amount}!)</label>
+        <label for="amount">The amount they should pay (maximum ZAR <span th:text="${expense.amount}"/>!)</label>
         <input type="number" id="amount" name="amount" placeholder="300" required/>
 
         <label for="due_date">By when must this claim be settled (dd/mm/yy)</label>
-        <input type="date" id="due_date" name="date" placeholder="05/09/2022" required/>
+        <input type="text" id="due_date" name="date" placeholder="05/09/2022" required/>
 
         <input type="submit" value="Submit" class="submit-button"/>
     </form>

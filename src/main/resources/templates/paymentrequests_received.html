@@ -12,39 +12,43 @@
 <div layout:fragment="contents">
     <h2>People that owe me</h2>
 
-    <p id="no_payment_requests_received" th:if="${#lists.isEmpty(expenses)}">You don't owe anyone anything!</p>
+    <p th:id="no_payment_requests_received" th:if="${#lists.isEmpty(payments)}">You don't owe anyone anything!</p>
 
-    <table th:if="${#lists.isEmpty(expenses)}">
+    <table th:if="${!#lists.isEmpty(payments)}">
         <thead>
         <tr>
             <th>Who</th>
             <th>What</th>
             <th>Due in (days)</th>
-            <th>How much</th>
+            <th>How Much</th>
             <th></th>
         </tr>
         </thead>
+
         <tbody>
-        <tr th:each="expense : ${expenses}">
-            <!-- Assuming `expense.date`, `expense.description`, `expense.amount`, etc. are available -->
-            <td id="date_${expense.id}" th:text="${expense.date}">05/09/2022</td>
-            <td id="amount_${expense.id}" th:text="${expense.amount}">ZAR 120.00</td> <!-- Updated here -->
-            <td id="request_${expense.id}" th:text="'N/A'">N/A</td>
-            <td id="received_${expense.id}" th:text="'N/A'">N/A</td>
-            <td action="/payment.action" th:text="'N/A'">
-                <input type="submit" value="Submit" class="submit-button"/>
+        <tr th:each="payment : ${payments}">
+            <td th:text="${payment.personWhoShouldPayBack.getName()}"> </td>
+            <td th:text="${payment.expense.description}">Dinner</td>
+            <td th:text="${payment.daysLeftToPay()}">4</td>
+            <td th:text="${payment.amountToPay}"> ZAR 150.00</td>
+            <td>
+                <!-- Check if the payment is not paid and display Pay button -->
+                <form th:if="${!payment.isPaid}" action="/paymentrequests_received" method="POST">
+                    <input type="hidden" th:value="${payment.id}" name="paymentId">
+                    <input id="submit" type="submit" value="Pay"/>
+                </form>
+
+                <span th:id="paid_1" th:if="${payment.isPaid}">&#10003;</span>
             </td>
+        </tr>
+        </tbody>
+
         <tfoot>
         <tr>
             <td colspan="5">Total Unpaid</td>
-            <td id="grand_total" >
-                <span th:text="${totalAmount}"></span>
-            </td>
+            <td id="grand_total" th:text="${totalAmount}"> </td>
         </tr>
         </tfoot>
-
-        </tr>
-        </tbody>
     </table>
 </div>
 

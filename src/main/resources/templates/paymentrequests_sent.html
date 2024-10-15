@@ -12,7 +12,7 @@
 <div layout:fragment="contents">
     <h2>People that owe me</h2>
 
-    <p id="no_payment_requests_sent" th:if="${#lists.isEmpty(payments)}">Nobody owes you anything!</p>
+    <p th:id="no_payment_requests_sent" th:if="${#lists.isEmpty(payments)}">Nobody owes you anything!</p>
 
     <table th:if="${!#lists.isEmpty(payments)}">
         <thead>
@@ -21,25 +21,22 @@
             <th>What</th>
             <th>Due in (days)</th>
             <th>How much</th>
-
         </tr>
         </thead>
+
         <tbody>
         <tr th:each="payment : ${payments}">
-            <!-- Assuming `expense.date`, `expense.description`, `expense.amount`, etc. are available -->
-            <td  th:text="${payment.personWhoShouldPayBack}"></td>
-            <td  th:text="${payment.expense.description}"></td> <!-- Updated here -->
-            <td  th:text="${payment.expense.description}">N/A</td>
-            <td  th:text="${payment.expense.description}">N/A</td>
+            <td th:text="${payment.personWhoShouldPayBack.getName()}"></td>
+            <td th:text="${payment.expense.description}"> </td>
+            <td th:text="${payment.daysLeftToPay()}"> </td> <!-- Added daysLeftToPay() here -->
+            <td th:text="${payment.amountToPay}"> </td>
         </tr>
         </tbody>
 
         <tfoot>
         <tr>
             <td colspan="5">Total Unpaid</td>
-            <td>
-                <span th:text="${totalAmount}"></span>
-            </td>
+            <td th:id="grand_total" th:text="${totalAmount}"> </td>
         </tr>
         </tfoot>
     </table>

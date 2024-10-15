@@ -3,7 +3,6 @@ package weshare.controller;
 import io.javalin.http.Handler;
 import org.javamoney.moneta.Money;
 import org.javamoney.moneta.function.MonetaryFunctions;
-import org.jetbrains.annotations.NotNull;
 import weshare.model.Expense;
 import weshare.model.MoneyHelper;
 import weshare.model.PaymentRequest;
@@ -17,13 +16,7 @@ import javax.money.MonetaryAmount;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import static weshare.model.MoneyHelper.ZERO_RANDS;
+import java.util.*;
 
 public class ExpensesController {
 
@@ -31,20 +24,29 @@ public class ExpensesController {
         ExpenseDAO expensesDAO = ServiceRegistry.lookup(ExpenseDAO.class);
         Person personLoggedIn = WeShareServer.getPersonLoggedIn(context);
 
+
         Collection<Expense> expenses = expensesDAO.findExpensesForPerson(personLoggedIn);
         MonetaryAmount totalAmount = expenses.stream()
                 .map(Expense::getAmount) // Get the MonetaryAmount
                 .reduce(MonetaryFunctions.sum()) // Sum the amounts
                 .orElse(Money.zero(MoneyHelper.ZERO_RANDS.getCurrency()));
 
+
         // Pass expenses and totalAmount to the view
+        boolean hasUnpaidExpenses = expenses.stream()
+                .flatMap(expense -> expense.listOfPaymentRequests().stream())
+                .anyMatch(request -> !request.isPaid());
+
+        // Pass expenses, totalAmount, and hasUnpaidExpenses to the view
         Map<String, Object> viewModel = Map.of(
                 "expenses", expenses,
-                "totalAmount", totalAmount
+                "totalAmount", totalAmount,
+                "hasUnpaidExpenses", hasUnpaidExpenses // Add the boolean to the view model
         );
 
         context.render("expenses.html", viewModel);
     };
+
 
     // Method to show the form for adding a new expense
     public static final Handler showAddExpenseForm = context -> {
@@ -81,18 +83,35 @@ public class ExpensesController {
         ExpenseDAO expensesDAO = ServiceRegistry.lookup(ExpenseDAO.class);
         expensesDAO.save(newExpense);
 
+        Collection<Expense> expenses = expensesDAO.findExpensesForPerson(personLoggedIn);
+        MonetaryAmount totalAmount = expenses.stream()
+                .map(Expense::getAmount) // Get the MonetaryAmount
+                .reduce(MonetaryFunctions.sum()) // Sum the amounts
+                .orElse(Money.zero(MoneyHelper.ZERO_RANDS.getCurrency()));
+
+        // Pass expenses and totalAmount to the view
+        Map<String, Object> viewModel = Map.of(
+                "expenses", expenses,
+                "totalAmount", totalAmount
+        );
+
         // Redirect back to the expenses page or render a success message
-        context.redirect("/expenses"); // Redirect to the expenses list page
+        context.render("/expenses.html", viewModel); // Redirect to the expenses list page
     };
 
     public static final Handler payment_request = context -> {
         String expenseId = context.queryParam("expenseId");
 
         ExpenseDAO expensesDAO = ServiceRegistry.lookup(ExpenseDAO.class);
-        Optional<Expense> expense = expensesDAO.get(UUID.fromString(expenseId));// Assuming you have this method
+        Optional<Expense> expenseOptional = expensesDAO.get(UUID.fromString(expenseId));// Assuming you have this method
+
+        Expense expense = expenseOptional.get();
+        Collection<PaymentRequest> payment_requests = expense.listOfPaymentRequests();
 
         Map<String, Object> viewModel = Map.of(
-                "expense", expense
+                "expense", expense,
+                "requests", payment_requests
+
         );
 
         context.render("paymentrequest.html", viewModel);
@@ -117,8 +136,14 @@ public class ExpensesController {
 
         Collection<PaymentRequest> payment_received = expensesDAO.findPaymentRequestsReceived(personLoggedIn);
 
+        MonetaryAmount totalAmount = payment_received.stream()
+                .map(PaymentRequest::getAmountToPay)
+                .reduce(MonetaryAmount::add) // Sum up the amounts
+                .orElse(Monetary.getDefaultAmountFactory().setCurrency("ZAR").setNumber(0).create());
+
         Map<String, Object> viewModel = Map.of(
-                "payments", payment_received
+                "payments", payment_received,
+                "totalAmount", totalAmount
         );
 
         context.render("/paymentrequests_received.html", viewModel);
@@ -131,10 +156,41 @@ public class ExpensesController {
 
         Collection<PaymentRequest> payment_sent = expensesDAO.findPaymentRequestsSent(personLoggedIn);
 
+        MonetaryAmount totalAmount = payment_sent.stream()
+                .map(PaymentRequest::getAmountToPay)
+                .reduce(MonetaryAmount::add) // Sum up the amounts
+                .orElse(Monetary.getDefaultAmountFactory().setCurrency("ZAR").setNumber(0).create());
+
         Map<String, Object> viewModel = Map.of(
-                "payments", payment_sent
+                "payments", payment_sent,
+                "totalAmount", totalAmount
         );
 
         context.render("/paymentrequests_sent.html", viewModel);
     };
+
+    public static Handler send_payment = context -> {
+        // Access the DAO (Data Access Object) to interact with expenses
+        ExpenseDAO expensesDAO = ServiceRegistry.lookup(ExpenseDAO.class);
+
+        // Retrieve the expense ID from the query parameters and parse it into a UUID
+        UUID expenseId = UUID.fromString(context.queryParam("expenseId"));
+
+        // Fetch the corresponding expense object from the database using the expense ID
+        Expense expense = expensesDAO.get(expenseId).get();
+
+        // Calculate the total payment request by subtracting the requested amount from the total amount
+        long totalPaymentRequest = expense.getAmount().getNumber().intValueExact() -
+                expense.totalAmountOfPaymentsRequested().getNumber().intValueExact();
+
+        // Create a view model to pass the data to the HTML template
+        HashMap<String, Object> viewModel = new HashMap<>();
+        viewModel.put("expense", expense);
+        viewModel.put("payments", expense.listOfPaymentRequests());
+        viewModel.put("total_paymentrequest", MoneyHelper.amountOf(totalPaymentRequest));
+
+        // Render the template and pass the view model data to it
+        context.render("paymentrequest.html", viewModel);
+    };
+
 }

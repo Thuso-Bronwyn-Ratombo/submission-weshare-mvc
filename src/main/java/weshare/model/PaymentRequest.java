@@ -12,6 +12,7 @@ import static weshare.model.DateHelper.TODAY;
 public class PaymentRequest {
     private final Expense expense;
     private final Person personWhoShouldPayBack;
+
     private final MonetaryAmount amountToPay;
     private final LocalDate dueDate;
     private final UUID id;
@@ -27,6 +28,7 @@ public class PaymentRequest {
         this.dueDate = dueDate;
         this.id = UUID.randomUUID();
         isPaid = false;
+
     }
 
     private void checkPaymentRequestAmount(Expense expense, MonetaryAmount amountToPay) {
