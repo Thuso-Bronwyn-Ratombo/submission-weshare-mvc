@@ -14,7 +14,7 @@
 
     <p th:id="no_payment_requests_received" th:if="${#lists.isEmpty(payments)}">You don't owe anyone anything!</p>
 
-    <table th:if="${!#lists.isEmpty(payments)}">
+    <table th:unless="${#lists.isEmpty(payments)}">
         <thead>
         <tr>
             <th>Who</th>
@@ -32,20 +32,22 @@
             <td th:text="${payment.daysLeftToPay()}">4</td>
             <td th:text="${payment.amountToPay}"> ZAR 150.00</td>
             <td>
+
+                <span  th:if="${payment.isPaid}" id="paid_1">&#10003;</span>
                 <!-- Check if the payment is not paid and display Pay button -->
-                <form th:if="${!payment.isPaid}" action="/paymentrequests_received" method="POST">
+                <form  th:if="${!payment.isPaid}" action="/paymentrequests_received" method="POST">
                     <input type="hidden" th:value="${payment.id}" name="paymentId">
                     <input id="submit" type="submit" value="Pay"/>
                 </form>
 
-                <span th:id="paid_1" th:if="${payment.isPaid}">&#10003;</span>
+
             </td>
         </tr>
         </tbody>
 
         <tfoot>
         <tr>
-            <td colspan="5">Total Unpaid</td>
+            <td colspan="3">Total Unpaid</td>
             <td id="grand_total" th:text="${totalAmount}"> </td>
         </tr>
         </tfoot>

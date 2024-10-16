@@ -28,6 +28,7 @@ public class Routes {
             get(PAYMENT_RECEIVED, ExpensesController.payment_received);
             get(PAYMENT_REQUEST,    ExpensesController.payment_request);
             post(PAYMENT_RECEIVED ,    ExpensesController.send_payment);
+            post(PAYMENT_REQUEST,   ExpensesController.send_request);
         });
     }
 }

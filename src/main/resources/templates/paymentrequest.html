@@ -27,9 +27,9 @@
         </tr>
     </table>
 
-    <h2>Previous Payment Requests for this expense</h2>
 
-    <table th:if="${expense != null}">
+    <table th:if="${!#lists.isEmpty(requests)}">
+        <h2>Previous Payment Requests for this expense</h2>
         <thead>
         <tr>
             <th>Who</th>
@@ -48,7 +48,7 @@
                 <span th:if="${request.isPaid}" >Yes</span>
                 <span th:if="${!request.isPaid}">No</span>
             </td>
-            <td th:id="'paymentrequest_amount_'+${expense.id}" th:text="${request.amountToPay}"> </td>
+            <td th:id="'paymentrequest_amount_'+${request.id}" th:text="${request.amountToPay}"> </td>
         </tr>
         </tbody>
 
@@ -62,11 +62,11 @@
         </tfoot>
     </table>
 
-    <form action="/payment.action" method="post" class="expense-form">
+    <form th:action="@{/paymentrequest(expenseId=${expense.id})}" method="post" class="expense-form">
         <label for="email">The email address of the person that should pay you</label>
         <input type="text" id="email" name="email" placeholder="student2@wethinkcode.co.za" required/>
 
-        <label for="amount">The amount they should pay (maximum ZAR <span th:text="${expense.amount}"/>!)</label>
+        <label for="amount">The amount they should pay (maximum <span th:text="${expense.amount}"/>!)</label>
         <input type="number" id="amount" name="amount" placeholder="300" required/>
 
         <label for="due_date">By when must this claim be settled (dd/mm/yy)</label>

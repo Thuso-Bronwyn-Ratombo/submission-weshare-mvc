@@ -13,7 +13,7 @@
         <a th:id="add_expense" th:href="@{/newexpense}">Add a new expense</a>
 
         <!-- Message if no expenses exist -->
-        <p th:id="no_expenses" th:if="${!hasUnpaidExpenses || #lists.isEmpty(expenses)}">You don't have any expenses!</p>
+        <p th:id="no_expenses" th:if="${#lists.isEmpty(expenses)}">You don't have any expenses!</p>
 
         <!-- Table format for listing expenses -->
         <table th:if="${!#lists.isEmpty(expenses)}">
